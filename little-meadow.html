@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Meadow — Application Garden</title>
+<link rel="stylesheet" href="css/style.css">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="cloud c1"><svg viewBox="0 0 120 50" width="120"><ellipse cx="30" cy="30" rx="30" ry="18" fill="#fff" opacity="0.8"/><ellipse cx="60" cy="20" rx="28" ry="20" fill="#fff" opacity="0.8"/><ellipse cx="90" cy="30" rx="24" ry="16" fill="#fff" opacity="0.8"/></svg></div>
+<div class="cloud c2"><svg viewBox="0 0 90 40" width="90"><ellipse cx="25" cy="24" rx="24" ry="14" fill="#fff" opacity="0.7"/><ellipse cx="55" cy="16" rx="20" ry="15" fill="#fff" opacity="0.7"/></svg></div>
+<div class="cloud c3"><svg viewBox="0 0 70 30" width="70"><ellipse cx="20" cy="18" rx="18" ry="10" fill="#fff" opacity="0.6"/><ellipse cx="42" cy="12" rx="16" ry="11" fill="#fff" opacity="0.6"/></svg></div>
+
+<div id="bee">
+  <svg viewBox="0 0 60 60" width="46" height="46">
+    <ellipse cx="30" cy="34" rx="14" ry="11" fill="#FFD93D"/>
+    <path d="M18 28 a12 11 0 0 1 24 0" fill="none" stroke="#4A3F55" stroke-width="3"/>
+    <rect x="19" y="28" width="4" height="14" rx="2" fill="#4A3F55"/>
+    <rect x="28" y="26" width="4" height="16" rx="2" fill="#4A3F55"/>
+    <rect x="37" y="28" width="4" height="14" rx="2" fill="#4A3F55"/>
+    <circle cx="30" cy="20" r="7" fill="#FFD93D"/>
+    <circle cx="27" cy="19" r="1.4" fill="#4A3F55"/>
+    <circle cx="33" cy="19" r="1.4" fill="#4A3F55"/>
+    <ellipse cx="18" cy="26" rx="9" ry="6" fill="#EAF7FF" opacity="0.85"/>
+    <ellipse cx="42" cy="26" rx="9" ry="6" fill="#EAF7FF" opacity="0.85"/>
+  </svg>
+</div>
+<div class="speech" id="speech"></div>
+
+<header class="hero">
+  <h1><span class="leaf">🌷</span> Little Meadow <span class="leaf">🌷</span></h1>
+  <p class="tagline">where every application gets planted, watered, and watched for bloom</p>
+  <div class="stats-row" id="statsRow"></div>
+</header>
+
+<div class="board">
+  <div class="panel" id="calendarPanel">
+    <div class="cal-head">
+      <button class="icon-btn" id="prevMonth">◀</button>
+      <div class="month-label" id="monthLabel"></div>
+      <button class="icon-btn" id="nextMonth">▶</button>
+    </div>
+    <div class="cal-grid" id="calDow"></div>
+    <div class="cal-grid" id="calGrid" style="margin-top:6px;"></div>
+    <div class="legend">
+      <div><span class="sw">🌱</span>seed (applied)</div>
+      <div><span class="sw">🌿</span>sprout (in progress)</div>
+      <div><span class="sw">🌸</span>bloom (interview)</div>
+      <div><span class="sw">💐</span>bouquet (offer)</div>
+      <div><span class="sw">🥀</span>wilted (rejected)</div>
+    </div>
+    <div class="day-panel" id="dayPanel" style="display:none;">
+      <h3 id="dayPanelTitle"></h3>
+      <div class="day-events" id="dayEvents"></div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:22px;">
+    <div class="panel">
+      <h2>🗒️ To‑do list <span class="badge" id="todoBadge">0 open</span></h2>
+      <div class="todo-tabs">
+        <button class="tab-btn active" data-tab="today">Today</button>
+        <button class="tab-btn" data-tab="month">This month</button>
+      </div>
+      <div class="todo-add">
+        <input type="text" id="todoInput" placeholder="Add a little task…" maxlength="120">
+        <button class="btn btn-mint btn-tiny" id="todoAddBtn">Add</button>
+      </div>
+      <div class="todo-list" id="todoList"></div>
+    </div>
+
+    <div class="panel">
+      <h2>🔔 Coming up</h2>
+      <div id="upcomingList" class="todo-list" style="max-height:220px;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" style="max-width:1180px; margin:26px auto 0;">
+  <h2>🌻 The garden <span class="badge" id="gardenBadge">0 planted</span>
+    <span style="margin-left:auto;"></span>
+  </h2>
+  <div style="display:flex; justify-content:flex-end; margin:-38px 0 12px;">
+    <button class="btn btn-primary" id="openAddModal">🌱 Plant a new application</button>
+  </div>
+  <div class="garden-grid" id="gardenGrid"></div>
+</div>
+
+<footer class="note">Reminders chime while this tab is open in your browser — leave Little Meadow open (or pinned) around the times you need a nudge. 🐝</footer>
+
+<!-- ADD/EDIT MODAL -->
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="close" id="modalClose">✕</button>
+    <h2 id="modalTitle">Plant a new application</h2>
+    <p class="sub">Drop in a screenshot and the firefly will read the company, role, and dates for you.</p>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*" style="display:none;">
+      <div id="dropZoneContent">📸 Click to choose a screenshot<br><small>(confirmation email, portal page, calendar invite…)</small></div>
+    </div>
+    <div class="ai-status" id="aiStatus" style="display:none;">
+      <div class="spinner"></div><span id="aiStatusText">The firefly is reading your screenshot…</span>
+    </div>
+
+    <div class="field">
+      <label>Company</label>
+      <input type="text" id="fCompany" placeholder="Acme Co.">
+    </div>
+    <div class="field">
+      <label>Role</label>
+      <input type="text" id="fRole" placeholder="Product Designer">
+    </div>
+    <div class="field">
+      <label>Stage</label>
+      <select id="fStatus">
+        <option value="seed">🌱 Seed — applied</option>
+        <option value="sprout">🌿 Sprout — in progress</option>
+        <option value="bloom">🌸 Bloom — interview</option>
+        <option value="bouquet">💐 Bouquet — offer</option>
+        <option value="wilted">🥀 Wilted — rejected</option>
+      </select>
+    </div>
+
+    <label style="display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:6px;">Important dates</label>
+    <div id="datesWrap"></div>
+    <button class="btn btn-ghost btn-tiny" id="addDateRow" type="button">+ add a date</button>
+
+    <div class="field" style="margin-top:14px;">
+      <label>Notes</label>
+      <textarea id="fNotes" rows="2" placeholder="Anything you want to remember…"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="deleteAppBtn" style="display:none;">Remove</button>
+      <button class="btn btn-primary" id="saveAppBtn">🌼 Save to garden</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+<script src="js/script.js"></script>
+</body>
+</html>
