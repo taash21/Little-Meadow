@@ -1,4 +1,19 @@
+async function testBackend(){
 
+const response = await fetch(
+"http://localhost:3000/api/health",
+
+{
+method:"POST"
+});
+
+const data = await response.json();
+
+console.log(data);
+
+}
+
+testBackend();
 (function(){
 
 /* ================= STATE ================= */
@@ -108,37 +123,20 @@ function readAndResize(file, maxWidth, quality){
 }
 
 /* ================= AI EXTRACTION ================= */
-async function analyzeScreenshot(dataUrl){
-  const base64 = dataUrl.split(',')[1];
-  const mediaType = dataUrl.substring(5, dataUrl.indexOf(';'));
-  const today = todayStr();
-  const prompt = `Today's date is ${today}. Look at this screenshot of a job application (could be a confirmation email, job portal, calendar invite, or interview email).
-Extract:
-- company: the company name (best guess, short)
-- role: the job title/role (short)
-- dates: an array of any relevant dates mentioned or implied — application deadline, interview date/time, follow-up date, start date, etc. For each: {"label": short label like "Interview" or "Application deadline", "date": "YYYY-MM-DD", "time": "HH:MM" in 24-hour time, using "09:00" if no time is given}. Resolve relative dates (e.g. "in 3 days", "next Monday") using today's date above. If no dates are found, return an empty array.
-Respond with ONLY raw JSON, no markdown fences, no explanation, in this exact shape:
-{"company":"...", "role":"...", "dates":[{"label":"...","date":"YYYY-MM-DD","time":"HH:MM"}]}`;
+async function analyzeScreenshot(image) {
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
-      model:"claude-sonnet-4-6",
-      max_tokens:1000,
-      messages:[{
-        role:"user",
-        content:[
-          {type:"image", source:{type:"base64", media_type: mediaType || "image/jpeg", data: base64}},
-          {type:"text", text: prompt}
-        ]
-      }]
-    })
-  });
-  const data = await response.json();
-  const textBlocks = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
-  const clean = textBlocks.replace(/```json|```/g,'').trim();
-  return JSON.parse(clean);
+    const response = await fetch("http://localhost:3000/api/analyze",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            image
+        })
+    });
+
+    return await response.json();
+
 }
 
 /* ================= CALENDAR ================= */
@@ -547,5 +545,15 @@ function renderAll(){
   renderAll();
   checkReminders();
 })();
+async function uploadScreenshot(file) {
+    const formData = new FormData();
+    formData.append("image", file);
 
+    const response = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    return await response.json();
+}
 })();

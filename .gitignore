@@ -1,4 +1,18 @@
+# Node modules
 node_modules/
+
+# Environment variables
 .env
-dist/
-build/
+
+# Uploaded screenshots
+backend/uploads/
+
+# Logs
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings (optional)
+.vscode/settings.json
