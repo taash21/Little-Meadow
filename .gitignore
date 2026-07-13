@@ -14,5 +14,7 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
+backend/database.sqlite
+backend/.env
 # VS Code settings (optional)
 .vscode/settings.json
